@@ -44,6 +44,10 @@ class InovaConnectConfig(models.Model):
     )
     active = fields.Boolean(default=True)
 
+    # UI-only reveal toggle - never persisted, so it always opens masked
+    # again next time this record is viewed.
+    show_shared_secret = fields.Boolean(store=False, default=False)
+
     # -- Cached copy of the hub's current maintenance notice, if any --
     # Cached rather than fetched live on every form view: showing "the hub
     # will be down soon" should still work even if the hub is briefly

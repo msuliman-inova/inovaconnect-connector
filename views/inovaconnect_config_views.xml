@@ -26,7 +26,15 @@
                         <field name="company_id" groups="base.group_multi_company"/>
                         <field name="hub_url" placeholder="https://hub.inova.technology"/>
                         <field name="tenant_id"/>
-                        <field name="shared_secret" password="True" groups="base.group_system"/>
+                        <label for="shared_secret"/>
+                        <div class="o_row">
+                            <field name="shared_secret" password="True"
+                                   invisible="show_shared_secret" groups="base.group_system"/>
+                            <field name="shared_secret"
+                                   invisible="not show_shared_secret" groups="base.group_system"/>
+                            <field name="show_shared_secret" widget="boolean_toggle" nolabel="1"
+                                   groups="base.group_system"/>
+                        </div>
                         <field name="active"/>
                     </group>
                     <button name="fetch_maintenance_notice" type="object"
