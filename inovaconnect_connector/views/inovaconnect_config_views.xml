@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="inovaconnect_config_view_form" model="ir.ui.view">
+        <field name="name">inovaconnect.config.view.form</field>
+        <field name="model">inovaconnect.config</field>
+        <field name="arch" type="xml">
+            <form string="InovaConnect">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_inovaconnect" type="object"
+                                class="oe_stat_button" icon="fa-whatsapp">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Open InovaConnect</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not maintenance_notice_current">
+                        <i class="fa fa-exclamation-triangle me-2" title="Maintenance notice"/>
+                        <field name="maintenance_message" readonly="1" nolabel="1" class="d-inline"/>
+                        <span> (scheduled <field name="maintenance_scheduled_at" readonly="1" nolabel="1" class="d-inline"/>,
+                            about <field name="maintenance_duration_minutes" readonly="1" nolabel="1" class="d-inline"/> minutes)</span>
+                    </div>
+                    <group>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="hub_url" placeholder="https://hub.inova.technology"/>
+                        <field name="tenant_id"/>
+                        <field name="shared_secret" password="True" groups="base.group_system"/>
+                        <field name="active"/>
+                    </group>
+                    <button name="fetch_maintenance_notice" type="object"
+                            string="Check for maintenance notices now" class="btn-link"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="inovaconnect_config_view_list" model="ir.ui.view">
+        <field name="name">inovaconnect.config.view.list</field>
+        <field name="model">inovaconnect.config</field>
+        <field name="arch" type="xml">
+            <list string="InovaConnect Configuration">
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="hub_url"/>
+                <field name="tenant_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_inovaconnect_config" model="ir.actions.act_window">
+        <field name="name">InovaConnect</field>
+        <field name="res_model">inovaconnect.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Set up InovaConnect</p>
+            <p>Enter the Hub URL, Tenant ID and Shared Secret provided by Inova.</p>
+        </field>
+    </record>
+
+    <record id="action_open_inovaconnect_for_company" model="ir.actions.server">
+        <field name="name">Open InovaConnect</field>
+        <field name="model_id" ref="model_inovaconnect_config"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_inovaconnect_for_company()</field>
+    </record>
+
+    <!-- Always available, even before this company is configured (or on a
+         fresh install from the Apps store) - the whole point is that someone
+         exploring this app has a way to reach Inova without a working setup. -->
+    <record id="action_inovaconnect_contact" model="ir.actions.act_url">
+        <field name="name">Contact Inova</field>
+        <field name="url">https://www.inova.technology</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_inovaconnect_root" name="InovaConnect" sequence="95"/>
+    <!-- Open for everyone - this is the button regular staff actually use
+         day to day, not a settings screen. The config record it looks up
+         (and the secret on it) stays admin-only via Configuration below. -->
+    <menuitem id="menu_inovaconnect_open" name="Open InovaConnect"
+              parent="menu_inovaconnect_root" action="action_open_inovaconnect_for_company"
+              sequence="5"/>
+    <menuitem id="menu_inovaconnect_contact" name="Contact Inova"
+              parent="menu_inovaconnect_root" action="action_inovaconnect_contact"
+              sequence="7"/>
+    <menuitem id="menu_inovaconnect_config" name="Configuration"
+              parent="menu_inovaconnect_root" action="action_inovaconnect_config"
+              groups="base.group_system" sequence="10"/>
+
+</odoo>

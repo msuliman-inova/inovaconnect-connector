@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="ir_cron_inovaconnect_fetch_maintenance_notice" model="ir.cron">
+        <field name="name">InovaConnect: Fetch maintenance notice from hub</field>
+        <field name="model_id" ref="model_inovaconnect_config"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_fetch_maintenance_notices()</field>
+        <field name="interval_number">30</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+
+</odoo>

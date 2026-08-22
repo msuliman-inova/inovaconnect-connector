@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- The hub calls back into this Odoo using a dedicated integration
+             user in this group - never an admin account. Scopes exactly to
+             what the adapter methods need, nothing else. -->
+        <record id="group_inovaconnect_integration" model="res.groups">
+            <field name="name">InovaConnect Hub Integration</field>
+            <field name="comment">Minimal access for the InovaConnect hub's
+                service account: calling the inovaconnect.connector adapter
+                methods, and whatever CRM/Sales/Accounting access those
+                methods need on this client's data.</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_inovaconnect_config_system,inovaconnect.config.system,model_inovaconnect_config,base.group_system,1,1,1,1
+access_inovaconnect_config_user,inovaconnect.config.user,model_inovaconnect_config,base.group_user,1,0,0,0
+access_inovaconnect_connector_integration,inovaconnect.connector.integration,model_inovaconnect_connector,group_inovaconnect_integration,1,1,1,0
+access_inovaconnect_connector_system,inovaconnect.connector.system,model_inovaconnect_connector,base.group_system,1,1,1,0
