@@ -60,6 +60,29 @@ class InovaConnectConnector(models.AbstractModel):
         return True
 
     @api.model
+    def notify_new_message(self, summary=None):
+        """Called by the hub the instant a new inbound WhatsApp message
+        arrives for this company - the connector holds no chat data at all,
+        so without this, staff working in their own Odoo would have no way
+        to know a customer message came in unless they already happened to
+        have the hub's WhatsApp tab open. Carries a plain text summary only
+        (e.g. sender name/number) - never the message body itself, keeping
+        this connector as thin as everything else it does.
+        """
+        users = self.env["res.users"].sudo().search([
+            ("company_ids", "in", self.env.company.id),
+            ("share", "=", False),
+        ])
+        for user in users:
+            user._bus_send("simple_notification", {
+                "type": "info",
+                "title": "New WhatsApp message",
+                "message": summary or "A new message just came in - open InovaConnect to reply.",
+                "sticky": True,
+            })
+        return True
+
+    @api.model
     def create_lead(self, name, phone, description=None, extra=None):
         """Create a CRM lead from a hub-side conversation.
 
