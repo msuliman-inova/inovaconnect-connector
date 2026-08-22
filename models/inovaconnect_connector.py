@@ -37,6 +37,29 @@ class InovaConnectConnector(models.AbstractModel):
     _description = "InovaConnect Hub Adapter"
 
     @api.model
+    def configure(self, hub_url, tenant_id, shared_secret):
+        """Called by the hub itself once it has valid API credentials for
+        this client - lets onboarding happen entirely from the hub side,
+        instead of also requiring someone to log into this Odoo and
+        manually re-type values that already exist on the hub's tenant
+        record. Creates or updates this company's inovaconnect.config.
+        """
+        Config = self.env["inovaconnect.config"].sudo()
+        config = Config.search([("company_id", "=", self.env.company.id)], limit=1)
+        vals = {
+            "hub_url": hub_url,
+            "tenant_id": tenant_id,
+            "shared_secret": shared_secret,
+            "active": True,
+        }
+        if config:
+            config.write(vals)
+        else:
+            vals["company_id"] = self.env.company.id
+            Config.create(vals)
+        return True
+
+    @api.model
     def create_lead(self, name, phone, description=None, extra=None):
         """Create a CRM lead from a hub-side conversation.
 
