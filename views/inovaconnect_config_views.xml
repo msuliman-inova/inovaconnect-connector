@@ -83,7 +83,8 @@
         <field name="target">new</field>
     </record>
 
-    <menuitem id="menu_inovaconnect_root" name="InovaConnect" sequence="95"/>
+    <menuitem id="menu_inovaconnect_root" name="InovaConnect" sequence="95"
+              web_icon="inovaconnect_connector,static/description/icon.png"/>
     <!-- Open for everyone - this is the button regular staff actually use
          day to day, not a settings screen. The config record it looks up
          (and the secret on it) stays admin-only via Configuration below. -->
