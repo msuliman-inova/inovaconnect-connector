@@ -68,18 +68,40 @@ class InovaConnectConnector(models.AbstractModel):
         have the hub's WhatsApp tab open. Carries a plain text summary only
         (e.g. sender name/number) - never the message body itself, keeping
         this connector as thin as everything else it does.
+
+        Two layers, deliberately: an immediate bus toast for whoever already
+        has this Odoo open right now, PLUS a real notification via Odoo's
+        own standard mail.thread pipeline (message_notify) - the same one
+        @-mentions and activity reminders use - which lands in their Inbox
+        AND fires a genuine push notification to any device they've
+        registered (desktop browser, installed PWA, or the Odoo mobile
+        app), reaching them even with everything closed. Odoo generates its
+        own push signing keys automatically; this needs no Firebase/APNs
+        setup on our side, only that the person has granted notification
+        permission once, same as any other push-enabled site or app.
         """
         users = self.env["res.users"].sudo().search([
             ("company_ids", "in", self.env.company.id),
             ("share", "=", False),
         ])
+        if not users:
+            return True
+
+        body = summary or "A new WhatsApp message just came in - open InovaConnect to reply."
+
         for user in users:
             user._bus_send("simple_notification", {
                 "type": "info",
                 "title": "New WhatsApp message",
-                "message": summary or "A new message just came in - open InovaConnect to reply.",
+                "message": body,
                 "sticky": True,
             })
+
+        self.env["mail.thread"].sudo().message_notify(
+            subject="New WhatsApp message",
+            body=body,
+            partner_ids=users.mapped("partner_id").ids,
+        )
         return True
 
     @api.model
