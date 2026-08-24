@@ -155,6 +155,29 @@ class InovaConnectConnector(models.AbstractModel):
         }
 
     @api.model
+    def create_contact(self, name, phone, email=None):
+        """Create a res.partner on this client's own Odoo from a hub-side
+        chat, so a contact created while chatting shows up in the client's
+        own Contacts app - not only inside the hub.
+
+        :param str name: contact display name.
+        :param str phone: contact phone number.
+        :param str email: optional email address.
+        :return: dict with partner_id and a URL the hub can link out to.
+        """
+        vals = {
+            "name": name or ("WhatsApp - %s" % (phone or "unknown")),
+            "phone": phone or False,
+        }
+        if email:
+            vals["email"] = email
+        partner = self.env["res.partner"].sudo().create(vals)
+        return {
+            "partner_id": partner.id,
+            "partner_url": self._record_url(partner),
+        }
+
+    @api.model
     def search_contact(self, phone):
         """Find an existing res.partner by phone number.
 
