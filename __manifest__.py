@@ -39,6 +39,7 @@ What this module actually does:
         'security/inovaconnect_groups.xml',
         'security/ir.model.access.csv',
         'views/inovaconnect_config_views.xml',
+        'views/res_users_views.xml',
         'data/ir_cron_data.xml',
     ],
     'installable': True,

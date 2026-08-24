@@ -105,6 +105,30 @@ class InovaConnectConnector(models.AbstractModel):
         return True
 
     @api.model
+    def get_staff_roster(self):
+        """Everyone this company's own admin has granted WhatsApp access to
+        (Settings > Users > WhatsApp Access), for the hub to sync into its
+        hub.staff records. This is the only direction staffing changes flow
+        in - a client adds/removes access to their own people here, and the
+        hub picks it up next time it syncs; Inova never needs to be told
+        about a hire or departure to keep access correct.
+        """
+        users = self.env["res.users"].sudo().search([
+            ("inovaconnect_wa_enabled", "=", True),
+            ("active", "=", True),
+            ("share", "=", False),
+        ])
+        return [
+            {
+                "uid": user.id,
+                "login": user.login,
+                "name": user.name,
+                "role": user.inovaconnect_wa_role or "agent",
+            }
+            for user in users
+        ]
+
+    @api.model
     def create_lead(self, name, phone, description=None, extra=None):
         """Create a CRM lead from a hub-side conversation.
 

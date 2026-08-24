@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_users_form_inovaconnect" model="ir.ui.view">
+        <field name="name">res.users.form.inovaconnect</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_button_box')]" position="after">
+                <group string="InovaConnect">
+                    <field name="inovaconnect_wa_enabled"/>
+                    <field name="inovaconnect_wa_role" invisible="not inovaconnect_wa_enabled"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_users_tree_inovaconnect" model="ir.ui.view">
+        <field name="name">res.users.list.inovaconnect</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_tree"/>
+        <field name="arch" type="xml">
+            <field name="login" position="after">
+                <field name="inovaconnect_wa_enabled" optional="show" string="WhatsApp"/>
+                <field name="inovaconnect_wa_role" optional="hide" string="WhatsApp Role"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>
